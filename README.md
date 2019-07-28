@@ -1,4 +1,4 @@
-# VoteBase
+# VoteGuard
 A PoC of a secure, reliable &amp; transparent E-voting system.
 
 The hassles of the ballot based voting system is widely known. While Electronic-Voting does remove most of these hassles, it introduces its own security & trust issues.
