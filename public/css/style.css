@@ -1,0 +1,737 @@
+body {
+    height: auto;
+    font-family: Roboto, sans-serif;
+}
+
+md-dialog {
+    max-height: 97%;
+    min-width: 275px;
+}
+
+md-card {
+    outline-color: #ffbebd;
+}
+.md-button.md-default-theme.md-primary, .md-button.md-primary {
+    color: #ef5350;
+}
+
+.home_page_img {
+    width: 280px;
+}
+
+footer {
+    margin-top: auto;
+    padding: 80px 25px 30px;
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    font-size: 12px;
+    background-color: white;
+}
+
+.footerLink:hover, .footerLink:focus {
+    color: #ef5350;
+}
+
+ul.pagination a, ul.pagination a:hover, ul.pagination a:focus {
+    color: #000000;
+}
+
+.pagination .active a, .pagination .active a:hover, .pagination .active a:focus {
+	z-index: 2;
+    color: #fff;
+    cursor: default;
+    background-color: #ef5350;
+    border-color: #ef5350;
+}
+
+.pagination>li:first-child>a, .pagination>li:last-child>a {
+    font-weight: 500;
+}
+
+.trans_row_view_detls_btn{
+    border: unset;
+    background: transparent;
+    color: #ef5350;
+    border-bottom: 1px solid #ef5350;
+    font-size: 13px;
+    padding: 1px;
+}
+
+.contact_us_dialog {
+    padding: 20px;
+    max-width: 275px;
+}
+
+.loader{
+    width: 40px;
+}
+
+.logo {
+    width: 40px;
+}
+
+.navbar {
+    padding: 5px;
+    display: flex;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.home_main_menu {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0px 40px 0px;
+}
+
+.home_main_menu h4 {
+    font-size: 14px;
+}
+
+.home_main_menu_btn {
+    text-align: center;
+    width: 30vw;
+}
+
+.home_main_menu_active_btn {
+    background: #fff1f1;
+    border-radius: 10px;
+}
+
+.home_main_menu_img {
+    width: 50px;
+}
+
+.home_main_menu_innerContainer {
+    padding: 10px 0px;
+    margin: 0 10%;
+}
+
+.trans_table_container {
+    width: 100vw;
+    margin: 0 auto;
+}
+
+.trans_table_row {
+    background-color: #f7f7f7;
+    box-shadow: none;
+    padding: 7px;
+    margin-bottom: 0px;
+    border-radius: 2px 2px 0px 0px;
+}
+
+.trans_table_row_img {
+    width: 50px;
+    align-self: center;
+}
+
+.trans_table_row_firstContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-left: 7px;
+}
+
+.trans_table_row_secondContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-left: auto;
+}
+
+.trans_table_row_dateTime {
+    font-size: 12px;
+}
+
+.trans_table_row_amount {
+    font-size: 16px;
+}
+
+.trans_table_row_settld {
+    font-size: 12px;
+}
+
+.trans_table_slide {
+    margin-top: 0px;
+    padding: 5px 9px 9px;
+    box-shadow: none;
+    border: solid 1px #dcdcdc;
+    border-radius: 0px 0px 2px 2px;
+}
+
+.trans_table_slide_firstContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 13px;
+}
+
+.trans_table_slide_totalBill {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.trans_table_slide_transId {
+    font-size: 12px;
+}
+
+.trans_table_slide_totalBillAmt {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: auto;
+    font-size: 16px;
+}
+
+.trans_table_slide_secondContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding-left: 13px;
+}
+
+.trans_table_slide_thirdContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 14px;
+}
+
+.trans_table_slide_coupTitle {
+    font-size: 12px;
+    max-width: 150px;
+}
+
+.trans_table_slide_disc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: auto;
+    font-size: 16px;
+}
+
+.trans_table_slide_imgs {
+    width: 41px;
+    height: 55px;
+}
+
+.trans_table_slide_settldImg {
+    width: 35px;
+    height: 55px;
+    margin-left: 4px;
+}
+
+.trans_table_row_success_pending_img {
+    width: 16px;
+}
+
+.navbar_profile_img {
+    width: 25px;
+}
+
+.trans_table_row_outlet {
+    font-size: 14px;
+    font-weight: bold;
+    padding-bottom: 2px;
+}
+
+.merchName {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.merchAddress {
+    font-size: 13px;
+}
+
+.navbar_elements {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.navbar_cross {
+    color: #444;
+    font-size: 29px;
+}
+
+.navbar_dropdown {
+    position: absolute;
+    right: 0px;
+    width: fit-content;
+    background-color: #ffffff;
+    z-index: 10;
+    -webkit-box-shadow: #888888 0px 5px 12px -4px;
+    -moz-box-shadow: #888888 0px 5px 12px -4px;
+    box-shadow: #888888 0px 5px 12px -4px;
+}
+
+.navbar_dropdown_links {
+    padding: 15px 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+    outline: none;
+}
+
+.navbar_dropdown_links:hover, .navbar_dropdown_links:focus {
+    color: #ef5350;
+    background-color: #f7f7f7;
+}
+
+.test_home_menu {
+    border-radius: 20px;
+    padding: 4px;
+    margin: 5px;
+    border: 1px solid #444;
+    width: 100px;
+    text-align: center;
+    outline: none;
+}
+
+.test_home_menu_active {
+    background-color: #fff1f1;
+    color: #ef5350;
+    border: 1px solid;
+}
+
+.test_home_menu:focus {
+    background-color: #fff1f1;
+    color: #ef5350;
+    border: 1px solid;
+}
+
+.test_home_menu_img {
+    width: 25px;
+    height: 25px;
+}
+
+.logoutBtn {
+    border: unset;
+    background: transparent;
+    text-transform: uppercase;
+    padding: 0px;
+}
+
+.disabledLogoutBtn {
+    cursor: not-allowed !important;
+}
+
+.changePassFormInput {
+    border: unset;
+    padding: 10px;
+    background-color: #efefef;
+    font-size: 12px;
+    width: 100%;
+}
+
+.navbar_outlet_select {
+    border: unset;
+    border-bottom: 1px solid gray;
+    background: transparent;
+}
+
+.outletDropdownRow {
+    padding: 10px 15px;
+}
+
+.outletDropdownRow:hover, .outletDropdownRow:focus {
+    background-color: #eeeeee;
+}
+
+.loginFormErrMsg {
+    color: #ef5350;
+    font-size: 12px;
+    width: 300px;
+    background: #f1f1f1;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.changePassFormErrMsg {
+    color: #ef5350;
+    font-size: 12px;
+    background: #efefef;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.changePassBtnDisabled {
+    cursor: not-allowed !important;
+}
+
+.togglePassIcon {
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    height: 40px;
+    line-height: 40px;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.togglePassIconChange {
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    height: 40px;
+    line-height: 40px;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.outletDropdown {
+    background: #ffffff;
+    width: fit-content;
+    position: absolute;
+    z-index: 10;
+    left: 40px;
+    -webkit-box-shadow: #888888 0px 5px 12px -4px;
+    -moz-box-shadow: #888888 0px 5px 12px -4px;
+    box-shadow: #888888 0px 5px 12px -4px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.outletDropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.outletDropdown::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+.outletDropdown::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+md-dialog::-webkit-scrollbar {
+    width: 7px;
+}
+
+md-dialog::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+md-dialog::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+.trans_dialog_coup_title {
+    font-weight: bold;
+    font-size: 12.5px;
+    max-width: 125px;
+}
+
+
+
+
+
+@media screen and (min-width: 360px) {
+    .trans_table_slide_coupTitle {
+        max-width: none;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .logo {
+        width: 50px;
+    }
+
+    .navbar {
+        padding: 5px 10px;
+    }
+
+    .navbar_dropdown_links {
+        font-size: 13px;
+    }
+
+    .home_main_menu {
+        margin: 30px 0px 60px 0px;
+    }
+
+    .home_main_menu h4 {
+        font-size: 15px;
+    }
+
+    .home_main_menu_btn {
+        width: 22vw;
+    }
+
+    .home_main_menu_img {
+        width: 55px;
+    }
+
+    .home_main_menu_innerContainer {
+        padding: 10px 0px;
+        margin: 0 15%;
+    }
+
+    .loader{
+        width: 50px;
+    }
+
+    .trans_table_container {
+        width: 70vw;
+    }
+
+    .trans_table_row_firstContainer {
+        padding-left: 15px;
+    }
+
+    .trans_table_row_secondContainer {
+        margin-left: auto;
+        margin-right: 10px;
+    }
+
+    .trans_table_row_amount {
+        font-size: 17px;
+    }
+
+    .trans_table_slide_firstContainer {
+        padding-left: 17px;
+    }
+
+    .trans_table_slide_totalBillAmt {
+        font-size: 17px;
+        margin-right: 10px;
+    }
+
+    .trans_table_slide_secondContainer {
+        padding-left: 17px;
+    }
+
+    .trans_table_slide_thirdContainer {
+        padding-left: 17px;
+    }
+
+    .trans_table_slide_disc {
+        font-size: 17px;
+        margin-right: 10px;
+    }
+
+    .trans_table_row {
+        padding: 5px 10px;
+    }
+
+    .merchName {
+        font-size: 16px;
+    }
+
+    .merchAddress {
+        font-size: 14px;
+    }
+
+    .navbar_cross {
+        font-size: 32px;
+    }
+
+    .outletDropdown {
+        left: 55px;
+    }
+
+    footer {
+        padding: 80px 35px 30px;
+    }
+
+    .trans_table_slide_imgs {
+        width: 45px;
+        height: 65px;
+        margin-left: 3px;
+    }
+
+    .trans_table_slide_settldImg {
+        width: 40px;
+        height: 65px;
+        margin-left: 7px;
+    }
+
+    md-dialog {
+        min-width: 300px;
+    }
+
+    .trans_dialog_coup_title {
+        max-width: 150px;
+    }
+
+    .contact_us_dialog {
+        max-width: 300px;
+    }
+
+    .home_page_img {
+        width: 400px;
+    }
+}
+
+@media screen and (min-width: 900px) {
+    .logo {
+        width: 60px;
+    }
+
+    .navbar {
+        padding: 5px 15px;
+    }
+
+    .navbar_dropdown_links {
+        font-size: 14px;
+    }
+
+    .home_main_menu {
+        margin: 35px 0px 70px 0px;
+    }
+
+    .home_main_menu h4 {
+        font-size: 16px;
+    }
+
+    .home_main_menu_btn {
+        width: 18vw;
+    }
+
+    .home_main_menu_img {
+        width: 60px;
+    }
+
+    .home_main_menu_innerContainer {
+        padding: 10px 0px;
+        margin: 0 20%;
+    }
+
+    .loader{
+        width: 60px;
+    }
+
+    .trans_table_container {
+        width: 55vw;
+    }
+
+
+    .trans_table_row_firstContainer {
+        padding-left: 20px;
+    }
+
+    .trans_table_row_userName {
+        font-size: 15px;
+    }
+
+    .trans_table_row_dateTime {
+        font-size: 13px;
+    }
+
+    .trans_table_row_amount {
+        font-size: 18px;
+    }
+
+    .trans_table_row_settld {
+        font-size: 13px;
+    }
+
+    .trans_table_slide_firstContainer {
+        padding-left: 22px;
+    }
+
+    .trans_table_slide_totalBill {
+        font-size: 16px;
+    }
+
+    .trans_table_slide_transId {
+        font-size: 13px;
+    }
+
+    .trans_table_slide_totalBillAmt {
+        font-size: 18px;
+    }
+
+    .trans_table_slide_secondContainer {
+        padding-left: 22px;
+    }
+
+    .trans_table_slide_thirdContainer {
+        padding-left: 22px;
+    }
+
+    .trans_table_slide_disc {
+        font-size: 18px;
+    }
+
+    .merchAddress {
+        font-size: 15px;
+    }
+
+    .navbar_cross {
+        font-size: 35px;
+    }
+
+    .outletDropdown {
+        left: 70px;
+    }
+
+    .trans_table_slide_imgs {
+        width: 45px;
+        height: 65px;
+        margin-left: 3px;
+    }
+
+    .trans_table_slide_settldImg {
+        width: 40px;
+        height: 65px;
+        margin-left: 7px;
+    }
+
+    md-dialog {
+        min-width: 315px;
+    }
+
+    .contact_us_dialog {
+        max-width: 315px;
+    }
+}
+
+
+.vertical_center {
+    min-height: 100%;  /* Fallback for browsers that do NOT support vh unit */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.loginInputCls {
+    width: 300px;
+    height: 40px;
+    padding-left: 10px;
+    border: unset;
+    background: #f1f1f1;
+}
+
+.loginInputClsBorder {
+    border-bottom: 1px solid #DCDCDC;
+}
+
+.loginBtnCls {
+    width: 300px;
+    height: 40px;
+    background: #ef5350;
+    color: #fff;
+    margin: 20px 0px;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    border: unset;
+}
+
+.disabledLoginBtnCls{
+    cursor: not-allowed !important;
+    opacity: 0.5;
+}
+
+.formInputFieldNotValid {
+    color: #ef5350;
+}
+
+
+
+
+
+

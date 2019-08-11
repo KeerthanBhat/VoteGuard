@@ -1,0 +1,33 @@
+{
+  "name": "nodejs-server",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "set NODE_ENV=production && node app.js",
+    "deploy": "gcloud app deploy app.yaml"
+  },
+  "dependencies": {
+    "async": "2.6.2",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.2.0",
+    "express": "^4.13.4",
+    "express-sslify": "^1.2.0",
+    "forever-agent": "^0.6.1",
+    "jsonwebtoken": "^8.3.0",
+    "moment": "^2.22.2",
+    "mongo-sanitize": "^1.0.0",
+    "mongoose": "5.4.16",
+    "node-gcm": "^1.0.2",
+    "node-mongoose-validator": "^1.2.0",
+    "nodemailer": "^4.6.8",
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "request": "^2.72.0",
+    "speakeasy": "^2.0.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=4.3.2"
+  }
+}

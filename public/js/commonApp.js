@@ -1,0 +1,1 @@
+angular.module("myApp", ['module1','module2']);

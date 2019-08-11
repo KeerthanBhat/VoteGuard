@@ -1,0 +1,149 @@
+<div id="transactionDialog">
+    <div id="transDialogCross" style="position: sticky; position: -webkit-sticky; top:0; width: 100%; z-index: 10; background-color: #ffffff; color: #444; font-size: 30px;">
+        <span style="margin-left: 3px; padding: 0px 10px;" ng-click="closeMobSizeDialog();" md-autofocus>&times;</span>
+    </div>
+    <div style="text-align: center; line-height: 25px; margin-top: 10px;">
+        <div ng-if="viewSettlementDetlsMerch.settld === 1">
+            <div style="margin-bottom: 3%;">
+                <img src="../images/green_success.svg" alt="" style="width: 37px; border-radius: 50%;">
+            </div>
+            <div style="font-size: 15px; font-weight: bold;">
+                Settlement Completed
+            </div>
+            <div style="font-size: 12px;">
+                On {{viewSettlementDetlsMerch.settlTime | date : "dd MMM '''yy" : "+0000"}}, <span style="text-transform: lowercase;">{{viewSettlementDetlsMerch.settlTime | date : "hh:mm a" : "+0000"}}</span>
+            </div>
+            <div style="font-size: 12px;">
+                <span style="color: rgba(0, 0, 0, 0.7);">Settlement ID:</span> <span style="font-weight: bold;">{{viewSettlementDetlsMerch.settleId}}</span>
+            </div>
+        </div>
+        <div ng-if="viewSettlementDetlsMerch.settld === 0">
+            <div style="margin-bottom: 3%;">
+                <img src="../images/yellow_clock.svg" alt="" style="width: 37px; border-radius: 50%;">
+            </div>
+            <div style="font-size: 15px; font-weight: bold;">
+                Settlement Pending
+            </div>
+            <div style="font-size: 12px;">
+                Due Date: {{viewSettlementDetlsMerch.dueDate | date : "dd MMM '''yy"}}
+            </div>
+        </div>
+    </div>
+    <hr style="border: 4px solid #f0f0f0; margin: 0px;"/>
+    <div style="padding: 9px;">
+        <div ng-if="viewSettlementDetlsMerch.settld === 1">
+            <div style="font-size: 12px; margin-bottom: 5px;">Settlement Done</div>
+            <div style="display: flex;">
+                <img style="width: 40px;" ng-src="{{viewSettlementDetlsMerch.bankIcon}}" onerror="this.src='../images/bank.svg'" alt="bank logo"/>
+                <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 5px;">
+                    <div style="font-weight: bold; font-size: 12.5px;">
+                        {{viewSettlementDetlsMerch.bankName}}
+                    </div>
+                    <div style="font-size: 10.5px; color: rgba(0, 0, 0, 0.7);">
+                        Acc No. {{viewSettlementDetlsMerch.mAccNo}}
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: center; margin-left: auto;">
+                    <span style="background-color: #b9e986; font-weight: bold; font-size: 12.5px; padding: 4px; border-radius: 12px;">&#8377; {{viewSettlementDetlsMerch.settledAmount}}</span>
+                </div>
+            </div>
+        </div>
+        <div ng-if="viewSettlementDetlsMerch.settld === 0">
+            <div style="font-size: 12px; margin-bottom: 5px;">Settlement Due</div>
+            <div style="display: flex;">
+                <img style="width: 40px; height: 50px;" src="../images/settlement_pending.svg" alt=""/>
+                <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 5px;">
+                    <div style="font-weight: bold; font-size: 12.5px;">
+                        Settlement Amount
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: center; margin-left: auto;">
+                    <span style="background-color: #f7d917; font-weight: bold; font-size: 12.5px; padding: 4px; border-radius: 12px;">&#8377; {{viewSettlementDetlsMerch.settledAmount}}</span>
+                </div>
+            </div>
+        </div>
+        <hr style="border: 0.5px solid #0000001a; margin: 10px 0px;"/>
+        <div style="font-size: 12px; margin-bottom: 5px;">Deducted Charges</div>
+        <div style="display: flex;">
+            <img style="width: 40px; height: 50px;" src="../images/deduct.svg" alt=""/>
+            <div style="display: flex; flex-direction: column; justify-content: space-evenly; padding-left: 5px;">
+                <div style="font-weight: bold; font-size: 12.5px;">
+                    Total Charges
+                </div>
+                <div style="font-size: 10.5px; color: rgba(0, 0, 0, 0.7);">
+                    Fee + GST
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: space-evenly; margin-left: auto;">
+                <span style="font-weight: bold; font-size: 12.5px; margin-left: auto;">&#8377; {{viewSettlementDetlsMerch.totalCharges}}</span>
+                <span style="font-weight: bold; font-size: 10px; margin-left: auto;">- (&#8377;{{viewSettlementDetlsMerch.comsn}} + &#8377;{{viewSettlementDetlsMerch.gst}})</span>
+            </div>
+        </div>
+        <div ng-if="loggedInMerchantParType !== undefined">
+            <hr style="border: 0.5px solid #0000001a; margin: 10px 0px;"/>
+            <div style="font-size: 12px; margin-bottom: 5px;">Outlet Info</div>
+            <div style="display: flex;">
+                <img style="width: 40px; height: 40px;" src="../images/merchant.svg" alt=""/>
+                <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 5px;">
+                    <div style="font-weight: bold; font-size: 12.5px;">
+                        <div ng-if="loggedInMerchantParType === 1">
+                            {{loggedInMerchantName}}
+                            <br>
+                            <span ng-show="viewSettlementDetlsMerch.shop_area2 !== null && viewSettlementDetlsMerch.shop_area2 !== undefined && viewSettlementDetlsMerch.shop_area2 !== ''">{{viewSettlementDetlsMerch.shop_area2}}, </span>{{viewSettlementDetlsMerch.shop_area1}}
+                        </div>
+                        <div ng-if="loggedInMerchantParType === 2">
+                            {{viewSettlementDetlsMerch.shop_name}}
+                            <br>
+                            {{loggedInMerchantAddress}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr style="border: 4px solid #f0f0f0; margin: 0px;"/>
+    <div style="padding: 9px;">
+        <div style="font-size: 12px; margin-bottom: 5px;">Total Bill Generated</div>
+        <div style="display: flex;">
+            <img style="width: 40px; height: 50px;" src="../images/merchantDashImg/Transaction_Fill.svg" alt=""/>
+            <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 5px;">
+                <div style="font-weight: bold; font-size: 12.5px;">
+                    Total Bill Amount
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; margin-left: auto;">
+                <span style="font-weight: bold; font-size: 12.5px;">&#8377; {{viewSettlementDetlsMerch.totalBillAmount}}</span>
+            </div>
+        </div>
+        <hr style="border: 0.5px solid #0000001a; margin: 10px 0px;"/>
+        <div style="font-size: 12px; margin-bottom: 5px;">Discount Applied</div>
+        <div style="display: flex;">
+            <img style="width: 40px; height: 50px;" src="../images/coupon.svg" alt=""/>
+            <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 5px;">
+                <div class="trans_dialog_coup_title">
+                    {{viewSettlementDetlsMerch.coup_title}}
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; margin-left: auto;">
+                <span style="font-weight: bold; font-size: 12.5px;">- &#8377; {{viewSettlementDetlsMerch.disc}}</span>
+            </div>
+        </div>
+        <hr style="border: 0.5px solid #0000001a; margin: 10px 0px;"/>
+        <div style="font-size: 12px; margin-bottom: 5px;">Amount Paid by Customer</div>
+        <div style="display: flex;">
+            <img style="width: 40px; height: 50px;" src="../images/boy.svg" alt=""/>
+            <div style="display: flex; flex-direction: column; justify-content: space-evenly; padding-left: 5px;">
+                <div style="font-weight: bold; font-size: 12.5px;">
+                    {{viewSettlementDetlsMerch.user_name}}
+                </div>
+                <div style="font-size: 10.5px; color: rgba(0, 0, 0, 0.7);">
+                    Trans ID: {{viewSettlementDetlsMerch.trans_id}}
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: space-evenly; margin-left: auto;">
+                <span style="font-weight: bold; font-size: 12.5px; margin-left: auto;">&#8377; {{viewSettlementDetlsMerch.amount}}</span>
+                <span style="font-size: 10px; margin-left: auto;">{{viewSettlementDetlsMerch.dateTime | date : "dd MMM '''yy"}}, <span style="text-transform: lowercase;">{{viewSettlementDetlsMerch.dateTime | date : "hh:mm a"}}</span></span>
+            </div>
+        </div>
+    </div>
+</div>
