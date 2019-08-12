@@ -1,0 +1,64 @@
+<div style="width: 90%; margin: auto; padding: 15px 0px;">
+    <div style="display: flex; justify-content: space-between;">
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+            <span style="font-weight: bold;">Change Password</span>
+        </div>
+        <!--<span style="color: #444; font-size: 25px; height: 25px; line-height: 25px;" ng-click="closeChangePassDialog();">&times;</span>-->
+    </div>
+    <form name="changePassForm" ng-submit="changePassForm.$valid && changePassConfirm(changePass.currentPass, changePass.newPass, changePass.confirmNewPass)" novalidate>
+        <div style="margin: 20px 0px;">
+            <div>
+                <input type="password"
+                       name="currentPass"
+                       ng-model="changePass.currentPass"
+                       required
+                       ng-minlength="4"
+                       placeholder="Enter Current Password"
+                       class="changePassFormInput"
+                       ng-class="{formInputFieldNotValid: !homeVariablesObj.currentPassEdit && changePassForm.$submitted && changePassForm.currentPass.$invalid}"
+                       ng-focus="homeVariablesObj.currentPassEdit = true"
+                       ng-blur="homeVariablesObj.currentPassEdit = false"
+                       md-autofocus>
+                <div ng-show="!homeVariablesObj.currentPassEdit && changePassForm.$submitted && changePassForm.currentPass.$invalid" class="changePassFormErrMsg">Minimum 4 characters required</div>
+            </div>
+            <div style="border-top: solid 1px #d8d8d8; border-bottom: solid 1px #d8d8d8; position: relative">
+                <input type="{{homeVariablesObj.showPassword ? 'text' : 'password'}}"
+                       name="newPass"
+                       ng-model="changePass.newPass"
+                       required
+                       ng-minlength="4"
+                       placeholder="Enter New Password"
+                       class="changePassFormInput"
+                       ng-class="{formInputFieldNotValid: !homeVariablesObj.newPassEdit && changePassForm.$submitted && changePassForm.newPass.$invalid}"
+                       ng-focus="homeVariablesObj.newPassEdit = true"
+                       ng-blur="homeVariablesObj.newPassEdit = false">
+                <div ng-click="toggleChangePasswordShow()" style="position: absolute; top: 0; right: 0; padding: 10px; text-transform: uppercase; font-size: 12px;">
+                    <div ng-show="homeVariablesObj.showPassword">hide</div>
+                    <div ng-hide="homeVariablesObj.showPassword">show</div>
+                </div>
+                <div ng-show="!homeVariablesObj.newPassEdit && changePassForm.$submitted && changePassForm.newPass.$invalid" class="changePassFormErrMsg">Minimum 4 characters required</div>
+            </div>
+            <div style="position: relative;">
+                <input type="password"
+                       name="confirmNewPass"
+                       ng-model="changePass.confirmNewPass"
+                       required
+                       ng-minlength="4"
+                       placeholder="Confirm New Password"
+                       class="changePassFormInput"
+                       ng-class="{formInputFieldNotValid: !homeVariablesObj.confirmNewPassEdit && changePassForm.$submitted && changePassForm.confirmNewPass.$invalid}"
+                       ng-focus="homeVariablesObj.confirmNewPassEdit = true"
+                       ng-blur="homeVariablesObj.confirmNewPassEdit = false">
+                <div style="position: absolute; top: 8px; right: 10px;" ng-show="changePassForm.newPass.$valid && changePass.newPass === changePass.confirmNewPass">
+                    <img src="../images/green_success.svg" alt="" style="border-radius: 50%; width: 17px;">
+                </div>
+                <div ng-show="!homeVariablesObj.confirmNewPassEdit && changePassForm.$submitted && changePassForm.confirmNewPass.$invalid" class="changePassFormErrMsg">Minimum 4 characters required</div>
+            </div>
+        </div>
+        <div id="changePassFormErrorMsg" ng-show="homeVariablesObj.changePassShowErr" style="color: #ef5350; font-size: 12px; margin-bottom: 15px;"></div>
+        <div style="text-align: right;">
+            <button type="button" ng-click="closeChangePassDialog()" ng-disabled="homeVariablesObj.disableChangePass" ng-class="{changePassBtnDisabled: homeVariablesObj.disableChangePass}" style="border: unset; background: transparent; text-transform: uppercase; font-size: 12px;">Cancel</button>
+            <button ng-disabled="homeVariablesObj.disableChangePass" ng-class="{changePassBtnDisabled: homeVariablesObj.disableChangePass}" style="border: unset; background: transparent; text-transform: uppercase; color: #ef5350; font-size: 12px;">Submit</button>
+        </div>
+    </form>
+</div>

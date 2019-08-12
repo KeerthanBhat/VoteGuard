@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="72px" height="72px" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>Successful</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-468.000000, -196.000000)">
+            <g id="Successful" transform="translate(473.000000, 201.000000)">
+                <circle id="Oval-2" fill="#FDDADA" cx="30.7999321" cy="30.7999321" r="30.7999321"></circle>
+                <path d="M16.9579407,31.4576805 C16.3304571,30.8320637 15.3138604,30.8320426 14.6864723,31.4575642 C14.0583136,32.0838541 14.0583136,33.0998572 14.6864722,33.726147 L23.6490014,42.6507227 C23.9498795,42.9510401 24.3584922,43.1199049 24.7844651,43.1199049 C25.2104817,43.1199049 25.6190815,42.9510093 25.9203276,42.6503251 L46.9135897,21.691295 C47.5415428,21.0652102 47.5415018,20.0492071 46.9133636,19.4229377 C46.2859861,18.7974266 45.2693894,18.7974266 44.6420118,19.4229376 L24.764719,39.2466461 L16.9579407,31.4576805 Z" id="Path" fill="#F69A98" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>
