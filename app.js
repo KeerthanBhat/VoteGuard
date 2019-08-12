@@ -3,6 +3,13 @@
 const express = require('express');
 const app = express();
 
+//DotEnv
+const result = require('dotenv').config({/*path: "../.env", *//*encoding: 'base64'*/});
+
+if (result.error) {
+    console.error("result.error: ", result.error);
+}
+//DotEnv
 
 //Disable Default Headers
 app.disable('x-powered-by');
@@ -47,7 +54,7 @@ app.use(function(err, req, res, next) {
 });
 ////</Error Handling>
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 let listener = app.listen(port, function(){
     // console.log('Listening on port ' + listener.address().port); //Listening on port 8888
