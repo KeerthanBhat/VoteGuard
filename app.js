@@ -11,6 +11,74 @@ if (result.error) {
 }
 //DotEnv
 
+// Mongoose Connection
+const mongoose = require('mongoose');
+const config = require('./config/database');
+
+const DB_URL = config.db.url;
+// const DB_PASS = config.db.mongo_pass;
+// const DB_USER = config.db.mongo_user;
+// const DB_ADMINDB = config.db.mongo_admin_db;
+
+mongoose.connection.on("connected", function(ref) {
+//  throw new Exception("Error here ...");
+    //console.log("Connected to " + " DB!");
+});
+
+// If the connection throws an error
+mongoose.connection.on("error", function(err) {
+    console.error('Failed to connect to DB ' + ' on startup ', err);
+    if (err) {
+        return next(err);
+    }
+});
+
+// When the connection is disconnected
+mongoose.connection.on('disconnected', function(err) {
+    console.error('Mongoose default connection to DB :' + ' disconnected');
+    if (err) {
+        return next(err);
+    }
+});
+
+let gracefulExit = function() {
+    mongoose.connection.close(function () {
+        console.error('Mongoose default connection with DB :'  + ' is disconnected through app termination');
+        process.exit(0);
+    });
+};
+
+// If the Node process ends, close the Mongoose connection
+process.on('SIGINT', gracefulExit).on('SIGTERM', gracefulExit);
+// ??
+
+exports.con_close = function () {
+    console.error('Mongoose connection disconnected');
+    mongoose.connection.close();
+};
+
+/*
+let options = {
+    user: DB_USER,
+    pass: DB_PASS,
+    auth: {
+        authdb: DB_ADMINDB
+    }
+};
+*/
+
+mongoose.Promise = global.Promise;
+mongoose.connect(DB_URL, function(err) {
+    console.log('Connected to DB!');
+    if (err) {
+        console.error('error connection to mongo server! err: ', err);
+    }
+});
+
+mongoose.set('debug', true);
+
+// Mongoose Connection
+
 //Disable Default Headers
 app.disable('x-powered-by');
 
