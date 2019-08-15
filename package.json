@@ -24,7 +24,9 @@
     "nodemailer-sendgrid-transport": "^0.2.0",
     "request": "^2.72.0",
     "speakeasy": "^2.0.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "@azure/cosmos": "^3.1.1",
+    "debug": "latest"
   },
   "devDependencies": {},
   "engines": {
