@@ -8,11 +8,6 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider',  function($r
         controller: 'loginCtrl',
         reloadOnSearch: false
     })
-    .when('/home',{
-        templateUrl: '../views/home.html',
-        controller: 'homeCtrl',
-        reloadOnSearch: false
-    })
     .otherwise({
         redirectTo: "/"
     })
