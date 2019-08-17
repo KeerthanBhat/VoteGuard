@@ -1,0 +1,58 @@
+<div class="vertical_center">
+    <div class="container text-center">
+        <div>
+            <img src="images/logo.png" style="width: 60px;" alt="logo">
+        </div>
+        <div >
+            <h1 style="font-size: 21px;">Voter Login</h1>
+        </div>
+        <div style="margin-top: 50px;">
+            <form name="loginDashFrm" ng-submit="loginDashFrm.$valid && login(loginFrm.userId, loginFrm.password)" novalidate>
+                <div style="display:flex; justify-content: center;">
+                    <div style="width: fit-content;" class="loginInputClsBorder">
+                        <input type="text"
+                               name="userId"
+                               ng-model="loginFrm.userId"
+                               required
+                               ng-pattern="loginFormInputValidation"
+                               placeholder="Voter ID"
+                               class="loginInputCls"
+                               ng-class="{formInputFieldNotValid: !loginVariablesObj.userIdEdit && loginDashFrm.$submitted && loginDashFrm.userId.$invalid}"
+                               ng-focus="loginVariablesObj.userIdEdit = true"
+                               ng-blur="loginVariablesObj.userIdEdit = false"
+                               autofocus>
+                        <div ng-show="!loginVariablesObj.userIdEdit && loginDashFrm.$submitted && loginDashFrm.userId.$invalid" class="loginFormErrMsg">Enter a valid Voter ID</div>
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content: center;">
+                    <div style="width: fit-content; position: relative;">
+                        <input type="{{loginVariablesObj.showPassword ? 'text' : 'password'}}"
+                               name="password"
+                               ng-model="loginFrm.password"
+                               required
+                               ng-minlength="4"
+                               class="loginInputCls"
+                               ng-class="{formInputFieldNotValid: !loginVariablesObj.passEdit && loginDashFrm.$submitted && loginDashFrm.password.$invalid}"
+                               ng-focus="loginVariablesObj.passEdit = true"
+                               ng-blur="loginVariablesObj.passEdit = false"
+                               placeholder="Password">
+                        <div class="togglePassIconChange" ng-click="togglePassword()">
+                            <div ng-show="loginVariablesObj.showPassword">hide</div>
+                            <div ng-hide="loginVariablesObj.showPassword">show</div>
+                        </div>
+                        <div ng-show="!loginVariablesObj.passEdit && loginDashFrm.$submitted && loginDashFrm.password.$invalid" class="loginFormErrMsg">Minimum 4 characters required</div>
+                    </div>
+                </div>
+
+                <div ng-show="loginVariablesObj.loginErrorMsg" id="loginPageErrMsg" style="color: #ef5350; margin-top: 5px; font-size: 12px;"></div>
+                <div>
+                    <button ng-disabled="loginVariablesObj.loginButtonDisabled" class="loginBtnCls" ng-class="{disabledLoginBtnCls: loginVariablesObj.loginButtonDisabled}">Login</button>
+                </div>
+                <!--<div>Forgot Password?</div>-->
+            </form>
+        </div>
+    </div>
+</div>
+
+
