@@ -13,6 +13,11 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider',  function($r
         controller: 'voteCtrl',
         reloadOnSearch: false
     })
+    .when('/temp',{
+        templateUrl: '../views/temp.html',
+        controller: 'tempCtrl',
+        reloadOnSearch: false
+    })
     .otherwise({
         redirectTo: "/"
     })
@@ -22,21 +27,26 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider',  function($r
 app.run(function($rootScope, $location, $window, $route){
 	$rootScope.$on( "$routeChangeStart", function(event, next, current) {
 		console.log("routeChangeStart fired.");
-        if($window.sessionStorage.getItem('token') === null) {
-            console.log("token not found.");
-            if(next.templateUrl !== "../views/loginpage.html" ) {
-                console.log("redirect to login page.");
-                $location.replace();
-                $location.url( "/" );
+
+        if(next.templateUrl === "../views/temp.html"){
+            //Dont do anything
+        } else {
+            if($window.sessionStorage.getItem('token') === null) {
+                console.log("token not found.");
+                if(next.templateUrl !== "../views/loginpage.html" ) {
+                    console.log("redirect to login page.");
+                    $location.replace();
+                    $location.url( "/" );
+                }
             }
-        }
-        else{
-            console.log("token found.");
-            console.log(next.templateUrl);
-            if(next.templateUrl === "../views/loginpage.html"){
-                console.log("already logged in. redirect to dashboard.");
-                $location.replace();
-                $location.url("/vote");
+            else{
+                console.log("token found.");
+                console.log(next.templateUrl);
+                if(next.templateUrl === "../views/loginpage.html"){
+                    console.log("already logged in. redirect to dashboard.");
+                    $location.replace();
+                    $location.url("/vote");
+                }
             }
         }
 
@@ -191,71 +201,100 @@ app.factory('commonDataFactory', function(){
     return commonDataFactory;
 });
 
-app.factory('apiCall', function($http, $window, $location, commonDataFactory){
+app.factory('apiCall', function($http, $window, $location, commonDataFactory, alertsAndDialogs){
+
     let apiCall = {};
-
-    apiCall.catchResponseError = function(error, catchResponseErrorCallback){
-        if(error.status === 401){
-            console.log("Not logged in.");
-            commonDataFactory.storedDataObj = {};
-            $window.localStorage.clear();
-            $location.url('/');
-        }
-        else{
-            catchResponseErrorCallback(error);
-        }
-    }
-
-    apiCall.addHeader = function(){
-        return {headers: {"X-Auth-Token": $window.localStorage.getItem('token')}};
-    }
 
     apiCall.login = function(loginApiCallObj, loginApiCallback){
         console.log("inside login API call.");
         return $http.post('/login', loginApiCallObj)
         .then(function(response){
             console.log("success response.data : %j ",response);
+            if(response.data.success === -1){
+                alertsAndDialogs.alert('#alertContainer', 'Error', 'Wrong Password', 'OK');
+            }
+            else if(response.data.success === -2){
+                alertsAndDialogs.alert('#alertContainer', 'Error', 'Voter not registered. Please Signup', 'OK');
+            }
+            else if(response.data.success === -5){
+                alertsAndDialogs.alert('#alertContainer', 'Error', 'No Candidates registered', 'OK');
+            }
+            else if(response.data.success === -8){
+                let msg = "Already Voted! Cast Number: " + response.data.cast;
+                alertsAndDialogs.alert('#alertContainer', 'Error', msg, 'OK');
+            }
+
             loginApiCallback(response);
+
         })
         .catch(function(error){
+            console.log("FAILED!!!");
             console.log("fail response.data : %j ",error);
+            alertsAndDialogs.alert('#alertContainer', 'Error', 'Some error occurred, please try again', 'OK');
             loginApiCallback(error);
         })
-    }
+    };
 
-    apiCall.logout = function(logoutApiCallObj, logoutApiCallback){
-        console.log("inside logout API call.");
-        let logoutHeaderObj = apiCall.addHeader();
-        return $http.post('/logout', logoutApiCallObj, logoutHeaderObj)
-        .then(function(response){
-            console.log("success response.data : %j ",response);
-            logoutApiCallback(response);
-        })
-        .catch(function(error){
-            console.log("fail response.data : %j ",error);
-            apiCall.catchResponseError(error, logoutApiCallback);
-        })
-    }
+    apiCall.castVote = function(voteApiCallObj, voteApiCallback){
+        console.log("inside voting API call.");
+        return $http.post('/cast_vote', voteApiCallObj)
+            .then(function(response){
+                console.log("success response.data : %j ",response);
+                if(response.data.success === 1){
+                    let msg = 'Cast Number: ' + response.data.cast;
+                    alertsAndDialogs.alert('#alertContainer', 'Success!', msg, 'OK');
+                } else {
+                    alertsAndDialogs.alert('#alertContainer', 'Error', 'Error voting! Please try again', 'OK');
+                }
+                voteApiCallback(response);
+            })
+            .catch(function(error){
+                console.log("fail response.data : %j ",error);
+                alertsAndDialogs.alert('#alertContainer', 'Error', 'Some error occurred, please try again', 'OK');
+                voteApiCallback(error);
+            })
+    };
+
+    apiCall.temp = function(voteApiCallback){
+        console.log("inside voting API call.");
+        return $http.post('/temp')
+            .then(function(response){
+                console.log("success response.data : %j ",response);
+                if(response.data.success === 1){
+                    alertsAndDialogs.alert('#alertContainer', 'Success!', "Database Populated", 'OK');
+                } else {
+                    alertsAndDialogs.alert('#alertContainer', 'Error', 'Error populating DB! Please try again', 'OK');
+                }
+                voteApiCallback(response);
+            })
+            .catch(function(error){
+                console.log("fail response.data : %j ",error);
+                alertsAndDialogs.alert('#alertContainer', 'Error', 'Some error occurred, please try again', 'OK');
+                voteApiCallback(error);
+            })
+    };
 
     return apiCall;
 });
 
-app.factory('alertsAndDialogs', function($mdDialog){
+app.factory('alertsAndDialogs', function($mdDialog, $route){
 
 let alertsAndDialogs = {};
 
-    alertsAndDialogs.alert = function(parentContainer, title, text, ariaLabel, btn){
+    alertsAndDialogs.alert = function(parentContainer, title, text, btn){
         $mdDialog.show(
-        $mdDialog.alert()
-        .parent(angular.element(document.querySelector(parentContainer)))
-        .clickOutsideToClose(true)
-        .title(title)
-        .textContent(text)
-        .ariaLabel(ariaLabel)
-        .ok(btn)
-        .targetEvent()
+            $mdDialog.alert()
+                .parent(angular.element(document.querySelector(parentContainer)))
+                .clickOutsideToClose(true)
+                .title(title)
+                .textContent(text)
+                .ariaLabel('Alert Dialog')
+                .ok(btn)
+                .targetEvent()
         );
-    }
+        $route.reload();
+        //$mdSidenav('rightOffer').open();
+    };
 
 return alertsAndDialogs;
 
@@ -288,7 +327,7 @@ app.factory('commonFunctions', function(){
                     return false;
                 }
             }
-        }
+        };
 
         if(type === '[object Array]'){
             for(let i = 0; i < val1.length; i++){
@@ -307,7 +346,7 @@ app.factory('commonFunctions', function(){
             }
         }
         return true;
-    }
+    };
 
     return commonFunctions;
 
@@ -320,8 +359,6 @@ app.controller('loginCtrl', ['$scope', '$location', '$window', '$timeout', '$roo
     $scope.loginVariablesObj.loginErrorMsg = false;
     $scope.loginFrm = {};
     $scope.login = function(userId, pass){
-        console.log(userId);
-        console.log(pass);
         $scope.loginVariablesObj.loginButtonDisabled = true;
         let loginObj = {
             voter_id: userId,
@@ -351,7 +388,8 @@ app.controller('loginCtrl', ['$scope', '$location', '$window', '$timeout', '$roo
                     $window.sessionStorage.setItem('voterId', response.data.voterId);
                     $window.sessionStorage.setItem('voterName', response.data.name);
                     $window.sessionStorage.setItem('voterArea', response.data.area);
-                    $window.sessionStorage.setItem('candidates', response.data.candidates);
+                    let candi = JSON.stringify(response.data.candidates);
+                    $window.sessionStorage.setItem('candidates', candi);
 
                     $location.url('/vote');
                 }
@@ -359,11 +397,19 @@ app.controller('loginCtrl', ['$scope', '$location', '$window', '$timeout', '$roo
                     console.log("Error: " + response.data.message);
                     if(response.data.success === -1){
                         $scope.loginVariablesObj.loginErrorMsg = true;
-                        document.getElementById('loginPageErrMsg').innerHTML = "Wrong Password.";
+                        $route.reload();
                     }
                     else if(response.data.success === -2){
                         $scope.loginVariablesObj.loginErrorMsg = true;
                         document.getElementById('loginPageErrMsg').innerHTML = "Voter not registered. Please Signup.";
+                    }
+                    else if(response.data.success === -5){
+                        $scope.loginVariablesObj.loginErrorMsg = true;
+                        document.getElementById('loginPageErrMsg').innerHTML = "No Candidates registered.";
+                    }
+                    else if(response.data.success === -8){
+                        $scope.loginVariablesObj.loginErrorMsg = true;
+                        document.getElementById('loginPageErrMsg').innerHTML = "Already Voted!\nCast Number: " + response.data.cast;
                     }
                     else{
                         $scope.loginVariablesObj.loginErrorMsg = true;
@@ -383,7 +429,7 @@ app.controller('loginCtrl', ['$scope', '$location', '$window', '$timeout', '$roo
     // validation for loginID input field
     $scope.loginFormInputValidation = (function(){
         console.log("loginFormInputValidation");
-        let Regex = /\b[a-zA-Z0-9]{12}\b/;
+        let Regex = /\b[a-zA-Z0-9]{32}\b/;
         return {
             test: function(value) {
                 let check1 = Regex.test(value);
@@ -395,524 +441,73 @@ app.controller('loginCtrl', ['$scope', '$location', '$window', '$timeout', '$roo
 }]);
 
 app.controller('voteCtrl', ['$scope', '$location', '$window', '$timeout', '$rootScope', 'apiCall', 'commonFunctions', function($scope, $location, $window, $timeout, $rootScope, apiCall, commonFunctions){
-    console.log("Inside voteCtrl.");
+    console.log("Inside voteCtrl");
 
-    /*
-    $scope.loginVariablesObj = {};
-    $scope.loginVariablesObj.loginButtonDisabled = false;
-    $scope.loginVariablesObj.loginErrorMsg = false;
-    $scope.loginFrm = {};
-    $scope.login = function(userId, pass){
-        console.log(userId);
-        console.log(pass);
-        $scope.loginVariablesObj.loginButtonDisabled = true;
-        let loginObj = {
-            voter_id: userId,
-            password: pass
-        }
-        apiCall.login(loginObj, function(response){
-            $scope.loginVariablesObj.loginButtonDisabled = false;
+    $rootScope.voterName = $window.sessionStorage.getItem('voterName');
+    $rootScope.voterArea = $window.sessionStorage.getItem('voterArea');
+    $scope.candidates = JSON.parse($window.sessionStorage.getItem('candidates'));
+    $scope.voteVariablesObj = {};
+
+    $scope.voteVariablesObj.showNavDropdown = false;
+
+    $scope.navbarDropdownOpen = function(){
+        console.log("show dropdown");
+        $scope.voteVariablesObj.showNavDropdown = true;
+    };
+
+    $scope.navbarDropdownHide = function(){
+        console.log("hide dropdown");
+        $scope.voteVariablesObj.showNavDropdown = false;
+    };
+
+    // logout portion
+    $scope.voteVariablesObj.logoutDisabled = false;
+
+    $scope.logout = function(){
+        $window.sessionStorage.clear();
+        $location.url('/');
+    }
+
+    $scope.castVote = function(candidate){
+
+        let voteObj = {
+            voterId: $window.sessionStorage.getItem('voterId'),
+            candidate: candidate
+        };
+        apiCall.castVote(voteObj, function(response){
             if(response.status !== 200){
                 if(response.status === -1){
                     console.log("Not connected to internet.");
-                    $scope.loginVariablesObj.loginErrorMsg = true;
+                    $scope.voteVariablesObj.loginErrorMsg = true;
                     document.getElementById('loginPageErrMsg').innerHTML = "Error connecting. Check Internet & Retry.";
                     $timeout(function(){
-                        $scope.loginVariablesObj.loginErrorMsg = false;
+                        $scope.voteVariablesObj.loginErrorMsg = false;
                     }, 5000)
                 }
                 else{
                     console.log("Sorry, there was an error. Please try again.");
-                    $scope.loginVariablesObj.loginErrorMsg = true;
+                    $scope.voteVariablesObj.loginErrorMsg = true;
                     document.getElementById('loginPageErrMsg').innerHTML = "Sorry, there was an error. Please try again.";
                 }
             }
             else{
                 if(response.data.success === 1){
-                    console.log("Login Successful.");
-                    $window.localStorage.setItem('token', response.data.token);
-                    $window.localStorage.setItem('voterId', response.data.voterId);
-                    $window.localStorage.setItem('voterName', response.data.name);
-                    $window.localStorage.setItem('voterArea', response.data.area);
-                    $window.localStorage.setItem('candidates', response.data.candidates);
-
-                    $location.url('/vote');
+                    console.log("Voting Successful!");
+                } else {
+                    console.log("Error voting");
                 }
-                else{
-                    console.log("Error: " + response.data.message);
-                    if(response.data.success === -1){
-                        $scope.loginVariablesObj.loginErrorMsg = true;
-                        document.getElementById('loginPageErrMsg').innerHTML = "Wrong Password.";
-                    }
-                    else if(response.data.success === -2){
-                        $scope.loginVariablesObj.loginErrorMsg = true;
-                        document.getElementById('loginPageErrMsg').innerHTML = "Voter not registered. Please Signup.";
-                    }
-                    else{
-                        $scope.loginVariablesObj.loginErrorMsg = true;
-                        document.getElementById('loginPageErrMsg').innerHTML = "Sorry, there was an error. Please try again.";
-                    }
-                }
+                $window.sessionStorage.clear();
+                $location.url('/');
             }
         });
-    }
-
-    $scope.loginVariablesObj.showPassword = false;
-
-    $scope.togglePassword = function(){
-        $scope.loginVariablesObj.showPassword = !$scope.loginVariablesObj.showPassword;
-    }
-
-    // validation for loginID input field
-    $scope.loginFormInputValidation = (function(){
-        console.log("loginFormInputValidation");
-        let Regex = /\b[a-zA-Z0-9]{12}\b/;
-        return {
-            test: function(value) {
-                let check1 = Regex.test(value);
-                return check1;
-            }
-        }
-    })();
-
-     */
+    };
 
 }]);
 
-app.controller('homeCtrl', ['$scope', '$location', '$window', '$mdDialog', '$rootScope', '$timeout', 'apiCall', 'commonDataFactory', 'bankData', 'commonFunctions', 'alertsAndDialogs', function($scope, $location, $window, $mdDialog, $rootScope, $timeout, apiCall, commonDataFactory, bankData, commonFunctions, alertsAndDialogs){
-    console.log("Inside homeCtrl.");
-    $scope.homeVariablesObj = {};
+app.controller('tempCtrl', ['$scope', '$location', '$window', '$timeout', '$rootScope', 'apiCall', 'commonFunctions', function($scope, $location, $window, $timeout, $rootScope, apiCall, commonFunctions){
+    console.log("Inside tempCtrl.");
 
-    // change css when selecting menu bar links portion
-    $scope.homeVariablesObj.hoverAllTrans = false;
-    $scope.homeVariablesObj.hoverPendingTrans = false;
-    $scope.homeVariablesObj.hoverSettledTrans = false;
-
-    //navbar open and close portion
-    $scope.homeVariablesObj.showNavDropdown = false;
-    $scope.homeVariablesObj.outletDropdownShow = false;
-
-
-    $scope.navbarDropdownOpen = function(){
-        console.log("show dropdown");
-        $scope.homeVariablesObj.showNavDropdown = true;
-    }
-
-    $scope.navbarDropdownHide = function(){
-        console.log("hide dropdown");
-        $scope.homeVariablesObj.showNavDropdown = false;
-    }
-
-    $scope.outletDropdownToggle = function(){
-        console.log("outlet dropdown toggled.");
-        if($scope.homeVariablesObj.outletDropdownShow === false){
-            $scope.homeVariablesObj.outletDropdownShow = true;
-        }
-        else{
-            $scope.homeVariablesObj.outletDropdownShow = false;
-        }
-    }
-    // add condition for keyboard clicks as well
-    $window.onclick = function(event){
-        let isNavbarClick = event.target.id === "profileIcon";
-        let isOutletListClick = event.target.id === "outletListToggle";
-        let isOutletListIconClick = event.target.id === "outletListToggleIcon";
-
-        if(isOutletListClick || isOutletListIconClick){
-            $scope.homeVariablesObj.showNavDropdown = false;
-        }
-        else if(isNavbarClick){
-            $scope.homeVariablesObj.outletDropdownShow = false;
-        }
-        else{
-            $scope.homeVariablesObj.showNavDropdown = false;
-            $scope.homeVariablesObj.outletDropdownShow = false;
-        }
-        $scope.$apply();
-    }
-
-    // logout portion
-    $scope.homeVariablesObj.logoutDisabled = false;
-
-    $scope.logout = function(){
-        let logoutObj = {
-            reg_id: ""
-        }
-        if($scope.homeVariablesObj.logoutDisabled === false){
-            $scope.homeVariablesObj.logoutDisabled = true;
-            apiCall.logout(logoutObj, function(response){
-                $scope.homeVariablesObj.logoutDisabled = false;
-                if(response.status !== 200){
-                    console.log("Sorry, there was an error. Please try again.");
-                    if(response.status === -1){
-                        console.log("Error connecting. Check Internet & Retry.");
-                        alertsAndDialogs.alert("alertContainer", "No Internet Connection", "Error connecting. Check Internet & Retry.", "No Internet Connection Alert", "OK");
-                    }
-                    else{
-                        alertsAndDialogs.alert("alertContainer", "Error", "Sorry, there was an error. Please try again.", "Error Alert", "OK");
-                    }
-                }
-                else{
-                    if(response.data.success === 1){
-                        console.log("Logout Successful.");
-                        commonDataFactory.storedDataObj = {};
-                        $window.localStorage.clear();
-                        $location.url('/');
-                    }
-                    else{
-                        console.log("Error: " + response.data.message);
-                        alertsAndDialogs.alert("alertContainer", "Error", "Sorry, there was an error. Please try again.", "Error Alert", "OK");
-                    }
-                }
-            });
-        }
-    }
-
-    // change password portion
-    $scope.openChangePassDialog = function(){
-        console.log("inside openChangePassDialog function.");
-        $scope.changePass = {};
-        $scope.homeVariablesObj.changePassShowErr = false;
-        $mdDialog.show({
-            scope: $scope,
-            preserveScope: true,
-            templateUrl: '../views/changePassDialog.html',
-        })
-        .catch(function(){
-            alertsAndDialogs.alert('alertContainer', 'Error', 'Sorry, there was an error. Please try again.', 'Error Alert', 'OK');
-        })
-    }
-
-    $scope.closeChangePassDialog = function(){
-        console.log("inside closeChangePassDialog function.");
-        $mdDialog.hide();
-    }
-    // change password show/hide toggle
-    $scope.homeVariablesObj.showPassword = false;
-    $scope.homeVariablesObj.disableChangePass = false;
-
-    $scope.toggleChangePasswordShow = function(){
-        $scope.homeVariablesObj.showPassword = !$scope.homeVariablesObj.showPassword;
-    }
-
-    $scope.changePassConfirm = function(oldPass, newPass, confirmPass){
-        console.log(oldPass);
-        console.log(newPass);
-        console.log(confirmPass);
-        if(newPass !== confirmPass){
-            console.log("Password mismatch.");
-            $scope.homeVariablesObj.changePassShowErr = true;
-            document.getElementById('changePassFormErrorMsg').innerHTML = "Password mismatch.";
-        }
-        else{
-            let changePassObj = {
-                new_pass: newPass,
-                old_pass: oldPass,
-                reg_id: ""
-            }
-            $scope.homeVariablesObj.disableChangePass = true;
-            apiCall.changePass(changePassObj, function(response){
-                $scope.homeVariablesObj.disableChangePass = false;
-                if(response.status !== 200){
-                    if(response.status === -1){
-                        $scope.homeVariablesObj.changePassShowErr = true;
-                        document.getElementById('changePassFormErrorMsg').innerHTML = "Error connecting. Check Internet & Retry.";
-                    }
-                    else{
-                        console.log("Sorry, there was an error. Please try again.");
-                        $scope.homeVariablesObj.changePassShowErr = true;
-                        document.getElementById('changePassFormErrorMsg').innerHTML = "Sorry, there was an error. Please try again.";
-                    }
-                }
-                else{
-                    if(response.data.success === 1){
-                        console.log("password changed successfully.");
-                        $mdDialog.hide();
-                    }
-                    else{
-                        console.log("Error: " + response.data.message);
-                        if(response.data.success === -1){
-                            $scope.homeVariablesObj.changePassShowErr = true;
-                            document.getElementById('changePassFormErrorMsg').innerHTML = "Incorrect Current Password.";
-                        }
-                        else if(response.data.success === -10){
-                            let time = commonFunctions.convertTime(response.data.time);
-                            $scope.homeVariablesObj.changePassShowErr = true;
-                            document.getElementById('changePassFormErrorMsg').innerHTML = "Attempts exceeded. Please retry after" + time + ".";
-                        }
-                        else{
-                            $scope.homeVariablesObj.changePassShowErr = true;
-                            document.getElementById('changePassFormErrorMsg').innerHTML = "Sorry, there was an error. Please try again.";
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    $scope.openContactDialog = function(){
-        console.log("contact us dialog opened");
-        $mdDialog.show({
-            scope: $scope,
-            preserveScope: true,
-            templateUrl: '../views/contactUsDialog.html',
-        })
-        .catch(function(){
-            alertsAndDialogs.alert('alertContainer', 'Error', 'Sorry, there was an error. Please try again.', 'Error Alert', 'OK');
-        })
-    }
-
-    $scope.closeContactDialog = function(){
-        console.log("close contact us dialog");
-        $mdDialog.hide();
-    }
-
-    // check if the data factory variables have been declared.
-    if(commonDataFactory.storedDataObj.allTrans === undefined){
-        console.log("Variables not declared.");
-        commonDataFactory.declareVariablesFunc();
-    }
-
-    // get all the values stored in localStorage (eg. merch name, address, outlets, etc.)
-    $rootScope.loggedInMerchantName = $window.localStorage.getItem('merchName');
-    // to reset the value upon logout.
-    $rootScope.loggedInMerchantAddress = undefined;
-    if($window.localStorage.getItem('merchAddress') !== null){
-        $rootScope.loggedInMerchantAddress = $window.localStorage.getItem('merchAddress');
-    }
-    // to reset the value upon logout.
-    $rootScope.loggedInMerchantParType = undefined;
-    if($window.localStorage.getItem('parType') !== null){
-        $rootScope.loggedInMerchantParType = Number($window.localStorage.getItem('parType'));
-    }
-    $rootScope.outletArr = [];
-    if($window.localStorage.getItem('merchsArr') !== null){
-        $rootScope.outletArr = JSON.parse($window.localStorage.getItem('merchsArr'));
-        for(let i = 0; i < $rootScope.outletArr.length; i++) {
-            if($rootScope.outletArr[i].area2 !== null && $rootScope.outletArr[i].area2 !== undefined && $rootScope.outletArr[i].area2 !== ""){
-                $rootScope.outletArr[i].address = $rootScope.outletArr[i].area2 + ", " + $rootScope.outletArr[i].area1;
-            }
-            else{
-                $rootScope.outletArr[i].address = $rootScope.outletArr[i].area1;
-            }
-        }
-    }
-
-    // menu button click functions
-    $scope.getAllTransactions = function(){
-        let params = $location.search();
-        if(params.hasOwnProperty('outlId')){
-            $location.search({'outlId': params.outlId, 'transType': 'all', 'page': 1});
-        }
-        else{
-            $location.search({'allTransPage': 1});
-        }
-    }
-
-    $scope.getPendingTransactions = function(){
-        let params = $location.search();
-        if(params.hasOwnProperty('outlId')){
-            $location.search({'outlId': params.outlId, 'transType': 'pending', 'page': 1});
-        }
-        else{
-            $location.search({'pendingTransPage': 1});
-        }
-    }
-
-    $scope.getSettledTransactions = function(){
-        let params = $location.search();
-        if(params.hasOwnProperty('outlId')){
-            $location.search({'outlId': params.outlId, 'transType': 'settled', 'page': 1});
-        }
-        else{
-            $location.search({'settledTransPage': 1});
-        }
-    }
-
-    //URL parameter conditionals
-    if(JSON.stringify($location.search()) === "{}"){
-        $scope.homeVariablesObj.selectedMer = "All Outlets";
-    }
-
-    else if($location.search().allTransPage !== undefined){
-        if($location.search().allTransPage === true || $location.search().allTransPage === ""){
-            $location.search({'allTransPage': 1});
-        }
-        else{
-            console.log("In homeCtrl getAllTrans called.");
-            $scope.homeVariablesObj.getAllTrans = true;
-            $scope.homeVariablesObj.getPendingTrans = false;
-            $scope.homeVariablesObj.getSettledTrans = false;
-            $scope.homeVariablesObj.selectedMerId = "allOutlets";
-            $scope.homeVariablesObj.selectedMer = "All Outlets";
-        }
-    }
-
-    else if($location.search().pendingTransPage !== undefined){
-        if($location.search().pendingTransPage === true || $location.search().pendingTransPage === ""){
-            $location.search({'pendingTransPage': 1});
-        }
-        else{
-            console.log("In homeCtrl getPendingTrans called.");
-            $scope.homeVariablesObj.getAllTrans = false;
-            $scope.homeVariablesObj.getPendingTrans = true;
-            $scope.homeVariablesObj.getSettledTrans = false;
-            $scope.homeVariablesObj.selectedMerId = "allOutlets";
-            $scope.homeVariablesObj.selectedMer = "All Outlets";
-        }
-    }
-
-    else if($location.search().settledTransPage !== undefined){
-        if($location.search().settledTransPage === true || $location.search().settledTransPage === ""){
-            $location.search({'settledTransPage': 1});
-        }
-        else{
-            console.log("In homeCtrl getSettledTrans called.");
-            $scope.homeVariablesObj.getAllTrans = false;
-            $scope.homeVariablesObj.getPendingTrans = false;
-            $scope.homeVariablesObj.getSettledTrans = true;
-            $scope.homeVariablesObj.selectedMerId = "allOutlets";
-            $scope.homeVariablesObj.selectedMer = "All Outlets";
-        }
-    }
-
-    else if($location.search().outlId !== undefined && $location.search().transType === undefined){
-        $scope.homeVariablesObj.selectedMerId = $location.search().outlId;
-        for(let i = 0; i < $rootScope.outletArr.length; i++){
-            if($rootScope.outletArr[i].merId === $scope.homeVariablesObj.selectedMerId){
-                if($rootScope.loggedInMerchantParType === 1){
-                    $scope.homeVariablesObj.selectedMer = $rootScope.outletArr[i].address;
-                }
-                else{
-                    $scope.homeVariablesObj.selectedMer = $rootScope.outletArr[i].shop_name;
-                }
-                break;
-            }
-            if(i === $rootScope.outletArr.length - 1){
-                $scope.homeVariablesObj.selectedMer = "No merchant found";
-            }
-        }
-    }
-
-    else if($location.search().outlId !== undefined && $location.search().transType !== undefined){
-        if($location.search().page === undefined || $location.search().page === true || $location.search().page === ""){
-            $location.search("page", 1);
-        }
-        else{
-            $scope.homeVariablesObj.selectedMerId = $location.search().outlId;
-            for(let i = 0; i < $rootScope.outletArr.length; i++){
-                if($rootScope.outletArr[i].merId === $scope.homeVariablesObj.selectedMerId){
-                    if($rootScope.loggedInMerchantParType === 1){
-                        $scope.homeVariablesObj.selectedMer = $rootScope.outletArr[i].address;
-                    }
-                    else{
-                        $scope.homeVariablesObj.selectedMer = $rootScope.outletArr[i].shop_name;
-                    }
-                    break;
-                }
-                if(i === $rootScope.outletArr.length - 1){
-                    $scope.homeVariablesObj.selectedMer = "No merchant found";
-                }
-            }
-            console.log($location.search());
-            if($location.search().transType === "all"){
-                console.log("In homeCtrl getAllTrans for outlet called.");
-                $scope.homeVariablesObj.getAllTrans = true;
-                $scope.homeVariablesObj.getPendingTrans = false;
-                $scope.homeVariablesObj.getSettledTrans = false;
-            }
-            else if($location.search().transType === "pending"){
-                console.log("In homeCtrl getPendingTrans for outlet called.");
-                $scope.homeVariablesObj.getAllTrans = false;
-                $scope.homeVariablesObj.getPendingTrans = true;
-                $scope.homeVariablesObj.getSettledTrans = false;
-            }
-            else if($location.search().transType === "settled"){
-                console.log("In homeCtrl getSettledTrans for outlet called.");
-                $scope.homeVariablesObj.getAllTrans = false;
-                $scope.homeVariablesObj.getPendingTrans = false;
-                $scope.homeVariablesObj.getSettledTrans = true;
-            }
-            else{
-                let params = $location.search();
-                $location.search({outlId: params.outlId});
-            }
-        }
-    }
-
-    else{
-        $location.search({});
-    }
-
-    $scope.getOutletTrans = function(merId){
-        console.log("Outlet selected");
-        let params = $location.search();
-        if(JSON.stringify(params) === "{}" || (params.hasOwnProperty('outlId') && !params.hasOwnProperty('transType'))){
-            if(merId === "allOutlets"){
-                $location.search({});
-            }
-            else{
-                console.log("selected outlet in homePage.");
-                $location.search({'outlId': merId});
-            }
-        }
-        else if(params.hasOwnProperty('allTransPage') || (params.hasOwnProperty('transType') && params.transType === "all")){
-            if(merId === "allOutlets"){
-                $location.search({'allTransPage': 1});
-            }
-            else{
-                console.log("selected outlet in allTransPage.");
-                $location.search({'outlId': merId, 'transType': 'all', 'page': 1});
-            }
-        }
-        else if(params.hasOwnProperty('pendingTransPage') || (params.hasOwnProperty('transType') && params.transType === "pending")){
-            if(merId === "allOutlets"){
-                $location.search({'pendingTransPage': 1});
-            }
-            else{
-                console.log("selected outlet in pendingTransPage.");
-                $location.search({'outlId': merId, 'transType': 'pending', 'page': 1});
-            }
-        }
-        else if(params.hasOwnProperty('settledTransPage') || (params.hasOwnProperty('transType') && params.transType === "settled")){
-            if(merId === "allOutlets"){
-                $location.search({'settledTransPage': 1});
-            }
-            else{
-                console.log("selected outlet in settledTransPage.");
-                $location.search({'outlId': merId, 'transType': 'settled', 'page': 1});
-            }
-        }
-    }
-
-    $scope.$on("openTransDialog", function(event, transDetls){
-        console.log("catching emitted signal");
-        $scope.openMobSizeDialog(transDetls);
-    });
-
-    $scope.openMobSizeDialog = function(transDetls){
-        $scope.viewSettlementDetlsMerch = transDetls;
-        console.log($scope.viewSettlementDetlsMerch);
-        $mdDialog.show ({
-            /*clickOutsideToClose: true,*/
-            scope: $scope,
-            preserveScope: true,
-            templateUrl: '../views/transDialog.html',
-        })
-        .catch(function(){
-            alertsAndDialogs.alert('alertContainer', 'Error', 'Sorry, there was an error. Please try again.', 'Error Alert', 'OK');
-        })
-    }
-
-    $scope.closeMobSizeDialog = function(){
-        console.log("close dialog");
-        $mdDialog.hide();
-        $location.search('transDialog', null);
-    }
-
-    $scope.displayTransDialogFunc = function(){
-        console.log("displayTransDialogFunc called.");
-        $location.search('transDialog', true);
-    }
-
+    apiCall.temp(function (err) {
+        $location.url('/');
+    })
 }]);

@@ -8,11 +8,30 @@ md-dialog {
     min-width: 275px;
 }
 
+.centerDiv
+{
+    width: 60%;
+    height:200px;
+    margin: 0 auto;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2
+}
+
+.button {
+    background-color: #f44336;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 25px;
+}
+
 md-card {
     outline-color: #ffbebd;
-}
-.md-button.md-default-theme.md-primary, .md-button.md-primary {
-    color: #ef5350;
 }
 
 .home_page_img {

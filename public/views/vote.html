@@ -1,14 +1,65 @@
-<div class="vertical_center">
-    <div class="container text-center">
-        <div>
-            <img src="images/logo.png" style="width: 60px;" alt="logo">
+<div ng-controller="voteCtrl">
+    <div class="navbar">
+        <div class="navbar_elements">
+            <a href="/vote"><img src="images/logo.png" alt="logo" class="logo"></a>
         </div>
-
-        <div>
-            <h1>Voting portal</h1>
+        <div class="navbar_elements" style="padding-left: 10px;">
+            <span class="voterName">{{voterName}}</span>
+            <span class="voterArea">{{voterArea}}</span>
         </div>
-
+        <div class="navbar_elements" style="margin-left: auto; margin-right: 1vw;" profile-arrow-nav>
+            <img id="profileIcon" src="../images/profile.svg" alt="profile" class="navbar_profile_img" ng-hide="voteVariablesObj.showNavDropdown" ng-click="navbarDropdownOpen()">
+            <span id="navbarCrossIcon" class="navbar_cross" ng-show="voteVariablesObj.showNavDropdown" ng-click="navbarDropdownHide()">&times;</span>
+        </div>
     </div>
+    <div class="navbar_dropdown" ng-show="voteVariablesObj.showNavDropdown">
+        <ul style="list-style: none; margin: 0px; padding: 0px; text-align: right;">
+            <li class="navbar_dropdown_links" id="navLink_0">
+                Contact Us
+            </li>
+            <li class="navbar_dropdown_links" id="navLink_1" >
+                Change Password
+            </li>
+            <li class="navbar_dropdown_links" id="navLink_2" ng-click="logout()" ng-class="{disabledLogoutBtn: voteVariablesObj.logoutDisabled}">
+                Logout
+            </li>
+        </ul>
+    </div>
+
+    <div class="centerDiv">
+        <table class="table table-striped table-bordered" style="max-width: 950px;">
+            <thead>
+            <tr>
+                <th style="text-align: center">Cadidate Name</th>
+                <th style="text-align: center">Vote</th>
+            </tr>
+            </thead>
+
+            <tbody ng-repeat="candi in candidates track by $index">
+            <tr>
+                <td align="center" style="font-size: 25px;">{{candi.name}}</td>
+                <td align="center">
+                    <button ng-click="castVote(candi.candidateId)" style="background-color: #f44336; border: none;font-size: 25px;">Vote</button>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

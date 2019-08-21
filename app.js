@@ -29,7 +29,7 @@ mongoose.connection.on("connected", function(ref) {
 mongoose.connection.on("error", function(err) {
     console.error('Failed to connect to DB ' + ' on startup ', err);
     if (err) {
-        return next(err);
+        return err;
     }
 });
 
@@ -37,7 +37,7 @@ mongoose.connection.on("error", function(err) {
 mongoose.connection.on('disconnected', function(err) {
     console.error('Mongoose default connection to DB :' + ' disconnected');
     if (err) {
-        return next(err);
+        return err;
     }
 });
 
@@ -69,9 +69,10 @@ let options = {
 
 mongoose.Promise = global.Promise;
 mongoose.connect(DB_URL, function(err) {
-    console.log('Connected to DB!');
     if (err) {
         console.error('error connection to mongo server! err: ', err);
+    } else {
+        console.log('Connected to DB!');
     }
 });
 
