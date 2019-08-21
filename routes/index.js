@@ -10,6 +10,12 @@ const sanitize = require('mongo-sanitize');
 const login = require('./user_login');
 router.post('/login', login.loginFunc);
 
+const cast_vote = require('./caste_vote');
+router.post('/cast_vote', cast_vote.casteVote);
+
+const  temp = require('./temp');
+router.post('/temp', temp.temp);
+
 router.post('*', (req, res, next) => {
     let vers = req.headers['x-ver'];
     console.log("Unspecified Route Post Req For version: " + vers + " req.path: " + req.path);
